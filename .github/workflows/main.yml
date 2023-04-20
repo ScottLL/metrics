@@ -1,0 +1,29 @@
+name: Update blog posts
+
+on:
+  schedule:
+    # Runs every hour
+    - cron: "0 1 * * *"
+
+jobs:
+  update-blog-posts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+          
+      - name: Install NPM packages
+        run: npm install
+
+      - name: Update blog posts
+        env:
+          WORDPRESS_URL: ${{ secrets.WORDPRESS_URL }}
+        run: node index.js
+          
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update blog posts"
+          commit_options: "--no-verify"
